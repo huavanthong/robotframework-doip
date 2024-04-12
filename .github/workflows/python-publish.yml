@@ -2,9 +2,8 @@ name: Publish RobotFramework DoIP to PyPI
 
 on:
   push:
-    tags:
-      - "rel/*.*.*"
-      - "rel/*.*.*.*"
+    branches: 
+      - htv3hc/test/feature
 
 jobs:
   build-n-publish:
@@ -26,6 +25,7 @@ jobs:
             sudo apt-get install -y texlive-latex-*
             echo "GENDOC_LATEXPATH=$(dirname $(which pdflatex))" >> $GITHUB_ENV
             python -m pip install --upgrade build twine wheel GenPackageDoc PythonExtensionsCollection
+            python -m pip install -r ./requirements.txt
 
         - name: Build source and wheel distributions
           run: |
@@ -36,13 +36,13 @@ jobs:
           uses: pypa/gh-action-pypi-publish@release/v1
           with:
             password: ${{ secrets.PYPI_API_TOKEN }} # This token should be created in Settings > Secrets > Actions
-            # repository_url: https://test.pypi.org/legacy/ # Use this for testing to upload the distribution to test.pypi
+            repository_url: https://test.pypi.org/legacy/ # Use this for testing to upload the distribution to test.pypi
 
-        - name: Create/Update GitHub Release
-          id: create_update_release
-          uses: ncipollo/release-action@v1
-          with:
-            allowUpdates: true
-            omitNameDuringUpdate: true
-            makeLatest: true
-            artifacts: dist/*
+        # - name: Create/Update GitHub Release
+        #   id: create_update_release
+        #   uses: ncipollo/release-action@v1
+        #   with:
+        #     allowUpdates: true
+        #     omitNameDuringUpdate: true
+        #     makeLatest: true
+        #     artifacts: dist/*
